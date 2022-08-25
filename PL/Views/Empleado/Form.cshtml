@@ -1,0 +1,220 @@
+﻿@model ML.Empleado
+@{
+    ViewData["Title"] = "Form";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>@ViewBag.Titulo</h2>
+            <h3>Ingresa los datos</h3>
+            <hr />
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            @using(Html.BeginForm("Form","Empleado",FormMethod.Post, new {enctype = "multipart/form-data" }))
+            {
+                <div class="row">
+                    <div class="col-md-3" style="display: none;">
+                        @Html.TextBoxFor(model => model.IdEmpleado, new { @class = "hidden form-control", autocomplete = "off" })
+                    </div>
+               
+                    <div class="col-md-3">
+                        @Html.LabelFor(model => model.Nombre)
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="bi bi-file-person-fill" style="color: midnightblue"></i></span>
+                            @Html.TextBoxFor(model => model.Nombre, new { @class = "form form-control", @id = "txtNombre", @placeholder="ej:Andres", autocomplete = "off",@onkeypress = "return SoloLetras(event, 'lblNombre')" })
+                            @Html.ValidationMessageFor(model => model.Nombre, null, new { @class = "text-danger"})
+                        </div>
+                        @Html.Label("", null, new {@id = "lblNombre"})
+                    </div>
+
+                    <div class="col-md-3">
+                        @Html.LabelFor(model => model.Telefono)
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="bi bi-file-person-fill" style="color: midnightblue"></i></span>
+                            @Html.TextBoxFor(model => model.Telefono, new { @class = "form form-control", @id = "txtTelefono", @placeholder="ej:5598134678", autocomplete = "off",@onkeypress = "return SoloNumeros(event ,'lblTelefono')" })
+                            @Html.ValidationMessageFor(model => model.Telefono, null, new { @class = "text-danger"})
+                        </div>
+                        @Html.Label("", null, new {@id = "lblTelefono"})
+                    </div>
+               
+                    <div class="col-md-3">
+                        @Html.LabelFor(model => model.Email)
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="bi bi-file-person-fill" style="color: midnightblue"></i></span>
+                            @Html.TextBoxFor(model => model.Email, new { @class = "form form-control", @id = "txtEmail", @placeholder="ej:shadow2021@gmail.com", autocomplete = "off", @onblur = "return validarEmail('txtEmail')"})
+                            @Html.ValidationMessageFor(model => model.Email, null, new { @class = "text-danger"})
+                        </div>
+                         @Html.Label("", null, new {@id = "lblErrorEmail"})
+                    </div>
+
+                    <div class="col-md-3">
+                        @Html.Label("Empresa")
+                     <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1"><i class="bi bi-star" style="color: midnightblue"></i></span>
+                        @Html.DropDownListFor(model => model.Empresa.IdEmpresa, new SelectList(Model.Empresa.Empresas, "IdEmpresa", "Nombre"), "Selecciona una empresa", new { @class = "form-control", @id = "ddlRol" })
+                        @Html.ValidationMessageFor(model => model.Empresa.IdEmpresa)
+                     </div>
+                    </div>
+
+
+              
+
+                <div class="col-md-3">
+                          @Html.LabelFor(model=> model.Imagen)
+                           <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1"><i class="bi bi-card-image"></i></span>
+                                <input id="IFImagen" type='file' class="form form-control" name="IFImagen" onchange="validateFile(this), readURL(this);  " />
+                           </div>
+                           @if (Model.Imagen !=null)
+                        {
+                            <img id="Img" src="data:image/*;base64,@Model.Imagen"style="width:250px ; height:250px" />
+                        }
+                            else
+                        {
+                             <img id="Img" src="~/Imagenes/UsuarioPorDefecto.jpg" style="width:250px ; height:250px" />
+                        }
+                    </div>
+                    @Html.HiddenFor(model => model.Imagen)
+
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <input type="submit" value="Guardar" class="form btn btn-success" id="register" disabled="disabled" />
+                            @Html.ActionLink("Regresar", "GetAll", "Empleado", htmlAttributes: new { @class = "btn btn-danger" })
+                        </div>
+                         
+                    </div>
+                    </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts
+{
+
+      <script src="~/lib/jquery/dist/jquery.js"></script>
+      <script type="text/javascript">
+
+ function validateFile()
+      {
+                    var allowedExtension = ['jpeg', 'jpg','png'];
+                    var fileExtension = document.getElementById('IFImagen').value.split('.').pop().toLowerCase();
+                    var isValidFile = false;
+                        for(var index in allowedExtension) {
+                            if(fileExtension === allowedExtension[index]) {
+                                isValidFile = true;
+                                break;
+                            }
+                        }
+                        if(!isValidFile) {
+                            alert('Las extensiones permitidas son : *.' + allowedExtension.join(', *.'));
+                            document.getElementById('IFImagen').value = ""
+                        }
+                        return isValidFile;
+                }
+                function readURL(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('#Img')
+                          .attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                }
+      }
+
+    function SoloLetras(e, controlId) 
+            {
+                var caracter = e.key;
+                if (!/^[a-zA-Z_]+$/.test(caracter)) 
+                {
+                     $('#' + controlId).text("Solo se aceptan letras");
+                     $('#' + controlId).css({ "color": "red" });
+                return false;
+                }
+                else 
+                {
+                    $('#' + controlId).text("");
+                return true;
+                }
+            }
+
+   function SoloNumeros(e, controlId) 
+            {
+               var caracter = e.key;
+               if (!/^[0-9]/g.test(caracter)) 
+               {
+                 $('#' + controlId).text("Solo se aceptan numeros");
+                 $('#' + controlId).css({ "color": "red" });
+                 return false;
+               }
+               else 
+               {
+                 $('#' + controlId).text("");
+                 return true;
+               }
+            }
+
+     
+
+    function validarEmail(){
+                            var email = document.getElementById("txtEmail");
+                            var lblError = document.getElementById("lblErrorEmail");
+                            lblError.textContent="";
+                            var regex = /[a-z0-9_\-]+(\.[_a-z0-9\-]+)*@@([_a-z0-9\-]+\.)+([a-z]{2}|aero|asia|arpa|biz|cat|com|coop|edu|gov|info|int|jobs|mil|mobi|museum|name|net|org|pro|tel|travel|xxx)/;
+
+                            if(!regex.test(email.value))
+                            {
+                                lblError.textContent= "El correo no es válido";
+                                lblError.style.color = 'red';
+
+                                setTimeout(function(){
+                                    setTimeout(function(){
+                                        lblError.textContent = "";
+                                        lblError.style.color = 'white';
+                                        email.style.borderColor = "rgba(226, 85, 55, 0.5)";
+                                        email.style.borderRadius = "1px"
+                                        email.style.borderWidth = "5px"
+
+                                    }, 0500);
+                                lblError.textContent = "INTENTE NUEVAMENTE";
+                                lblError.style.color = 'red';
+                                }, 1500);
+
+                                return false;
+                            }
+                            else
+                            {
+                                lblError.textContent = "";
+                                email.style.borderColor = "white";
+                                email.style.borderRadius = "0"
+                                email.style.borderWidth = "0"
+                                return true;
+                            }
+                        }
+
+    
+$('#txtNombre, #txtTelefono, #txtEmail, #txtEmpresa, #Img').bind('keyup', function() {
+    if(allFilled()) $('#register').prop('disabled', false);
+    else $('#register').prop('disabled', true);
+});
+
+function allFilled() {
+    var filled = true;
+    $('.form').each(function() {
+        if($(this).val() == '') filled = false;
+    });
+    return filled;
+}
+
+    </script>
+
+}

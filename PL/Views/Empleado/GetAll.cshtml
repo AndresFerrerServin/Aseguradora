@@ -1,0 +1,77 @@
+﻿@model ML.Empleado
+@{
+    ViewData["Title"] = "GetAll";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container">
+    <div class="row">
+        <h2>Empleado</h2>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h5>Seleccione el + para agregar un nuevo empleado...</h5>
+            <hr />
+        </div>
+    </div>
+    <br />
+    <div class="row">
+
+        <div class="row">
+            <div style="float:left;">
+                @Html.ActionLink("+", "Form", "Empleado", htmlAttributes: new { @class = "btn btn-success" })
+                <br>
+            </div>
+
+
+            @if (Model.Empleados == null)
+            {
+                <div class="p-3 mb-2 bg-danger text-white">Aun no hay empleados registradas</div>
+            }
+            else
+            {
+                <table class="table table-bordered table-responsive">
+                    <thead>
+                        <tr class="table-secondary">
+                            <td style="display :none">IdEmpleado</td>
+                            <td class="text-center">Nombre</td>
+                            <td class="text-center">Telefono</td>
+                            <td class="text-center">Email</td>
+                            <td class="text-center">Imagen</td>
+                            <td class="text-center">Empresa</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (ML.Empleado empleado in Model.Empleados)
+                        {
+                            <tr>
+                                <td style="display :none">@empleado.IdEmpleado</td>
+
+                                <td class="text-center">@empleado.Nombre</td>
+                                <td class="text-center">@empleado.Telefono</td>
+                                <td class="text-center">@empleado.Email</td>
+
+
+                                <td class="text-center">
+                                    @if (empleado.Imagen != null)
+                                    {
+                                        <img class="card-ing" src="data:image/*;base64,@empleado.Imagen" style="width:150px ; height:150px" />
+                                    }
+                                    else
+                                    {
+                                        <img class="card-ing" src="~/Imagenes/UsuarioPorDefecto.jpg" style="width:150px ; height:150px" />
+                                    }
+
+                                </td>
+                                <td class="text-center">@empleado.Empresa.Nombre</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+
+    </div>
+</div>
+
