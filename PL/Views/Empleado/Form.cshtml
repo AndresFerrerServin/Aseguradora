@@ -134,7 +134,7 @@
     function SoloLetras(e, controlId) 
             {
                 var caracter = e.key;
-                if (!/^[a-zA-Z_]+$/.test(caracter)) 
+                if (!/^[a-zA-Z_ ]+$/.test(caracter)) 
                 {
                      $('#' + controlId).text("Solo se aceptan letras");
                      $('#' + controlId).css({ "color": "red" });
